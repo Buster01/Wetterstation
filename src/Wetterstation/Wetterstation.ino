@@ -8,7 +8,7 @@ const char * WriteAPIKey = "API-KEY"; // Thingspeak Write API -Key
 #define write2TS true // Bei true werden die Daten auch zu Thingspeak geschrieben, bei false nicht
 
 #define AkkuPin A0
-#define WindSensorPin 2
+#define WindSensorPin 4
 #define DHTPIN 1
 #define DS18B20_PIN 0
 #define ResetPIN  7
