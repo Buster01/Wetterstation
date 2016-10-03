@@ -1,6 +1,3 @@
-#include <RTCZero.h>
-RTCZero rtc;
-
 int sleepTime (float ASpannung, unsigned long beginn) {
   unsigned long sleep;
   
@@ -29,15 +26,16 @@ void hw_reset(void) {
   digitalWrite(ResetPIN, HIGH); 
 }
 
-void sleep(int dauer) {
+void sleep(int sleepTime) {
+  byte minute =0;
+  byte sekunde = 0;
 
   // WLAN abschalten
   WiFi.maxLowPowerMode();
   WiFi.end();
-  
-  Serial.println("Schlafe fuer " + String(dauer) + " Sekunden!");
-  delay(dauer * 1000);
+  delay(sleepTime * 1000);
 }
+
 
 
 

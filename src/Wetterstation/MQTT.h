@@ -1,6 +1,3 @@
-// MQTT Library
-#include <PubSubClient.h>
-
 WiFiClient wlanClient;
 PubSubClient mqtt_client(wlanClient);
 
@@ -19,7 +16,7 @@ boolean mqtt_connect(void) {
   int counter = 0;
 
   mqtt_client.setServer(mqtt_server, 1883);
-  mqtt_client.setCallback(callback);
+  //mqtt_client.setCallback(callback);
   
   mqtt_client.connect("Wetterstation");
   Serial.print("MQTT Connection: ");
@@ -38,16 +35,20 @@ boolean mqtt_connect(void) {
 }
 
 
-void mqtt_daten_senden(String aTemp, String iTemp, String ASpannung, String lFeuchte, String lDruck, String Wind, String sleepT, boolean write2ThingSpeak) {
+void mqtt_daten_senden(String aTemp, String iTemp, String ASpannung, String lFeuchte, String lDruck, String Wind, String(min_wind), String(max_wind), String sleepT, boolean write2ThingSpeak) {
   ThingSpeak.begin(wlanClient);
   String t_punkt = taupunkt(aTemp.toFloat(), lFeuchte.toFloat());
-  
+  String chill = WindChill(aTemp.toFloat(), Wind.toFloat());
+
   mqtt_client.publish("/openHAB/Wetterstation/Temperatur1", aTemp.c_str());
   mqtt_client.publish("/openHAB/Wetterstation/wsTemp", iTemp.c_str());
   mqtt_client.publish("/openHAB/Wetterstation/Akkuspannung", ASpannung.c_str());
   mqtt_client.publish("/openHAB/Wetterstation/Luftfeuchte", lFeuchte.c_str());
   mqtt_client.publish("/openHAB/Wetterstation/Luftdruck", lDruck.c_str());
   mqtt_client.publish("/openHAB/Wetterstation/Wind", Wind.c_str());
+  mqtt_client.publish("/openHAB/Wetterstation/minWind", min_wind.c_str());
+  mqtt_client.publish("/openHAB/Wetterstation/maxWind", max_wind.c_str());
+  mqtt_client.publish("/openHAB/Wetterstation/WindChill", chill.c_str());
   mqtt_client.publish("/openHAB/Wetterstation/Taupunkt", t_punkt.c_str());
   mqtt_client.publish("/openHAB/Wetterstation/SleepTime", sleepT.c_str());
   mqtt_client.publish("/openHAB/Wetterstation/RSSI", WLAN_RSSI.c_str());

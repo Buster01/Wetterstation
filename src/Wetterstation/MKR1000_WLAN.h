@@ -1,5 +1,3 @@
-#include <SPI.h>
-#include <WiFi101.h>
 
 void printWifiStatus() {
   // print the SSID of the network you're attached to:

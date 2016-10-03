@@ -1,33 +1,12 @@
  // Library für BMP085
-#include <Wire.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BMP085_U.h>
 Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(10085);
 
 // Library für Dallas 18B20
-#include <DallasTemperature.h>
-#include <OneWire.h>
 OneWire oneWire(DS18B20_PIN);          
 DallasTemperature DS18B20(&oneWire);
 
 //Library für DHT 22
-#include <DHT.h>
 DHT dht(DHTPIN, DHTTYPE);
-
-void displaySensorDetails(void)
-{
-  sensor_t sensor;
-  bmp.getSensor(&sensor);
-  Serial.println("------------------------------------");
-  Serial.print  ("Sensor:       "); Serial.println(sensor.name);
-  Serial.print  ("Driver Ver:   "); Serial.println(sensor.version);
-  Serial.print  ("Unique ID:    "); Serial.println(sensor.sensor_id);
-  Serial.print  ("Min Value:    "); Serial.print(sensor.min_value); Serial.println(" hPa");
-  Serial.print  ("Max Value:    "); Serial.print(sensor.max_value); Serial.println(" hPa");
-  Serial.print  ("Resolution:   "); Serial.print(sensor.resolution); Serial.println(" hPa");  
-  Serial.println("------------------------------------");
-  Serial.println("");
-}
   
 void detect_sensors(void){
     // Sensoren 
@@ -46,12 +25,10 @@ void detect_sensors(void){
      
     if(!bmp.begin()) {
       Serial.print("Ooops, kein BMP085 gefunden ... Pruefe die Verkabelung oder die I2C Adresse!");
-      while(1);
     }
 }
 
 String get_ds1820_aussentemp() {
-  //Serial.println("Lese Aussentemperatur Sensor aus!");
   String temp = "";
     
   DS18B20.requestTemperatures();
@@ -61,7 +38,6 @@ String get_ds1820_aussentemp() {
   }
 
 String get_ds1820_innentemp() {
-  //Serial.println("Lese Innentemperatur Sensor aus!");
   String temp = "";
     
   DS18B20.requestTemperatures();
@@ -71,7 +47,6 @@ String get_ds1820_innentemp() {
   }
 
 String get_bmp180_druck() {
-  //Serial.println("Lese Luftdruck Sensor aus!");
   sensors_event_t event;
   float bmp_druck = 0.00;
   String druck = "";
@@ -79,7 +54,6 @@ String get_bmp180_druck() {
   bmp.getEvent(&event);
   if (event.pressure)
   {
-    // Luftdruck lesen und umwandeln in string
     bmp_druck = event.pressure;
     druck = String(bmp_druck);
     druck.trim();
@@ -88,7 +62,6 @@ String get_bmp180_druck() {
 }
 
 String get_dht_feuchte(){
-  //Serial.println("Lese Luftfeuchte Sensor aus!");
   String feuchte = "";
   feuchte = String(dht.readHumidity());
   feuchte.trim();
@@ -124,7 +97,7 @@ void windpulscallback() {
 
 
 float calculateSpeed(int intervall) {
-  Serial.println("Lese Windsensor Sensor aus!");
+  Serial.println("Starte Messung der Windgeschwindigkeit!");
   unsigned long start;
   unsigned long end;
   unsigned long diff;
@@ -145,6 +118,18 @@ float calculateSpeed(int intervall) {
   Serial.print  (current_speed);
   Serial.println(" km/h");
   return current_speed;
+}
+
+String WindChill (double temperatur, double wind) {
+  float chill;
+
+  if (temperatur < 10) {
+    chill= 13.12 +(0.6215 * temperatur) - (11.37 * pow(wind, 0.16)) + (0.3965 * temperatur * pow(wind, 0.16));
+  }
+  else {
+    chill = temperatur;
+  }
+  return String(chill);
 }
 
 
