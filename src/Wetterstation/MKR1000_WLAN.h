@@ -17,6 +17,7 @@ void printWifiStatus() {
 }
 
 boolean connect_wlan(unsigned long beginn) {
+  WiFi.hostname (host_name);
   int counter = 0;
   int status = WL_IDLE_STATUS;
   

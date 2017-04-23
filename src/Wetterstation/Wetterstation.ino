@@ -2,6 +2,7 @@ const char* ssid = "SSID";  // SSID deines WLAN Netzwerkes
 const char* wlan_passwd = "PassW0rd"; // Passwort deines WLAN Netzwerkes
 
 const char* mqtt_server = "MQTT-Server"; // MQTT Server
+const char* host_name = "Wetterstation";
 
 unsigned long ChannelNumber = 123; // Thingspeak Channel Nummer
 const char * WriteAPIKey = "API-KEY"; // Thingspeak Write API -Key
@@ -40,7 +41,7 @@ unsigned long beginn = 0;
 void setup() {
   beginn = millis();
   
-  Serial.begin(115200);
+  Serial.begin(9600);
   pinMode(WindSensorPin, INPUT_PULLUP);
   
   Serial.println(" ");
@@ -62,7 +63,7 @@ void loop() {
 
   int sensorValue = analogRead(AkkuPin); // AkkuSpannung messen
   float aspannung = Spannung_berechnen(sensorValue);
-  Serial.println("Akkkuspannunng: " + String(aspannung) + " V");
+  Serial.println ("Akku-Spannung: " +String(aspannung));
 
   wind_mess_wiederholung = abs((sleepTime(aspannung, beginn) - 15) / 5) + 1;
   Serial.println("Windmesswiederholung: " + wind_mess_wiederholung);
@@ -82,12 +83,13 @@ void loop() {
   if (!connect_wlan(beginn)) 
   {
     Serial.println("Keine WLAN Verbindung moeglich! Reset!");
-    sleep(sleepTime(aspannung, beginn));
+    Serial.println("Schlafe fuer " + String(sleepTime(aspannung, beginn)) + " Sekunden!");
+    hw_reset();
   }
   else {
     if (!mqtt_connect()) {
       Serial.println("keine Verbindung! Reset!");
-      sleep(sleepTime(aspannung, beginn));
+      hw_reset();
     }
     else {         
       mqtt_daten_senden(String(atemp),String(itemp),String(aspannung), String(lfeuchte),String(ldruck), String(ds_wind), String(min_wind), String(max_wind), String(sleepTime(Spannung_berechnen(sensorValue), beginn)), write2TS);

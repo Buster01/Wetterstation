@@ -13,9 +13,9 @@ int sleepTime (float ASpannung, unsigned long beginn) {
   if (ASpannung < 3.2) { sleep = 900;}
   
   sleep = (sleep - ((millis()-beginn)/1000));
+  
   if (sleep <= 10 ) {sleep = 10;}
   if (sleep > 900) {sleep = 900;}
-  
   return (int)sleep;
 }
 
