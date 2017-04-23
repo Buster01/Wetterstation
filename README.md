@@ -1,7 +1,7 @@
 # Wetterstation
 Solarbetriebene Arduino Wetterstation (Temperatur, Luftfeuchte, Taupunkt, Windgeschwindigkeit)
 
-Datenübertragung per MQTT
+Datenübertragung per MQTT und an ThinkSpeak
 
 Hardware:
  * Arduino MRK1000
